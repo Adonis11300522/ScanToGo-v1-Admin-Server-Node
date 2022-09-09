@@ -31,7 +31,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(formData.parse({ uploadDir: os.tmpdir(), autoClean: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors());
+app.use(cors({origin: '*'}));
 
 app.use('/', indexRouter);
 app.use('/auth', authMiddleware, authRouter);
