@@ -67,6 +67,10 @@ User.init({
     type: DataTypes.STRING,
     allowNull: true
   },
+  quantity: {
+    type: DataTypes.INTEGER,
+    allowNull: true
+  },
   role: {
     type: DataTypes.ENUM([
       User.ROLE.USER,
