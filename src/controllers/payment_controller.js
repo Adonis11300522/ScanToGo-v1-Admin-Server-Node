@@ -109,4 +109,34 @@ router.post('/membership', async function (req, res, next) {
   })
 });
 
+router.get('/membership/:id', async function (req, res, next) {
+  const {id} = req.params;
+  const membership = await Membership.findOne({
+    where: {
+      user_id: id
+    }
+  });
+  console.log("membership---", membership);  
+  // return
+  const user = await User.findByPk(id);
+  console.log("user==-0---",user);
+
+  if(!user) {
+    return res.json({
+      status: false,
+        errorCode: "Error_InvalidID"
+    });
+  }
+
+
+  return res.json({
+    status : true,
+    message: "success",
+    data: {
+      membership: membership,
+      user: user
+    }
+  })
+});
+
 module.exports = router;
