@@ -3,8 +3,8 @@ const router = express.Router();
 const { validate, ValidationError, Joi } = require('express-validation');
 const AWS = require('aws-sdk');
 const s3 = new AWS.S3({
-  accessKeyId: process.env.SCANNGET_AWS_S3_ACCESS_KEY_ID,
-  secretAccessKey: process.env.SCANNGET_AWS_S3_SECRET_ACCESS_KEY,
+  accessKeyId: process.env.scantogo_AWS_S3_ACCESS_KEY_ID,
+  secretAccessKey: process.env.scantogo_AWS_S3_SECRET_ACCESS_KEY,
 });
 const fs = require('fs');
 const moment = require('moment');
@@ -176,7 +176,7 @@ router.use('/signup', validate({
       errorCode: "Error_DuplicateEmail",
     });
   }
-
+  
   user = new User();
   user.firstName = data.firstName;
   user.lastName = data.lastName;
@@ -186,11 +186,9 @@ router.use('/signup', validate({
   user.apiToken = AuthToken.generate(user.email, user.password);
   user.status = User.STATUS.PENDDING;
 
-  
+  console.log(user);
   
   await user.save();
-
- 
 
   return res.json({
     status: true,
@@ -258,13 +256,13 @@ router.get('/sendCode', validate({
     const mailData = {
       from: 'support@scantogo.com',
       to: value,
-      subject: 'ScanToGo Verification Code',
+      subject: 'scantogo Verification Code',
       text: 'Easy',
       html: `
         <div
           style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #2b266d;"
         >
-          <h1>Welcome to ScanToGo</h1>
+          <h1>Welcome to scantogo</h1>
           <span style="color: black">
             Thanks for using our service.
           </span>
@@ -441,13 +439,13 @@ async function (req, res, next) {
   const mailData = {
     from: 'support@scantogo.com',
     to: email,
-    subject: 'ScanToGo Verification Code',
+    subject: 'scantogo Verification Code',
     text: 'Easy',
     html: `
       <div
         style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #2b266d;"
       >
-        <h1>Welcome to ScanToGo</h1>
+        <h1>Welcome to scantogo</h1>
         <span style="color: black">
           Thanks for using our service.
         </span>
