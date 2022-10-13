@@ -4,7 +4,7 @@ const { validate, Joi } = require('express-validation');
 const { Op, fn, where, col } = require('sequelize');
 
 const ScanResult = require('../models/scan_result');
-const User = require('../models/User');
+const User = require('../models/user');
 
 router.post('/', validate({
     body: Joi.object({

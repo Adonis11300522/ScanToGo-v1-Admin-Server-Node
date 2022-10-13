@@ -177,18 +177,71 @@ router.use('/signup', validate({
     });
   }
   
+  const verifyCode = crypto.randomBytes(5).toString('base64').substring(0, 5).toUpperCase();
+
   user = new User();
   user.firstName = data.firstName;
   user.lastName = data.lastName;
   user.email = data.email;
   user.password = await hash.generate(data.password);
   user.phoneNumber = data.phoneNumber;
+  user.verifyCode = verifyCode;
   user.apiToken = AuthToken.generate(user.email, user.password);
   user.status = User.STATUS.PENDDING;
 
   console.log(user);
   
   await user.save();
+
+  const transporter = nodemailer.createTransport({
+    port: process.env.MAIL_PORT,
+    host: process.env.MAIL_SERVER,
+    auth: {
+      user: process.env.MAIL_USERNAME,
+      pass: process.env.MAIL_PASSWORD
+    },
+    secure: true
+  });
+
+  const mailData = {
+    from: 'support@scantogo.com',
+    to: value,
+    subject: 'ScanToGo Verification Code',
+    text: 'Easy',
+    html: `
+      <div
+        style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #2b266d;"
+      >
+        <h1>Welcome to ScanToGo</h1>
+        <span style="color: black">
+          Thanks for using our service.
+        </span>
+      
+        <p style="color: black">
+          Here is your verification code.
+        </p>
+        <h3 style="padding: 24px; background-color: #ddd; font-size: 48px;">${user.verifyCode}</h3>
+      
+        <p style="color: black">
+          Regards.
+        </p>
+      </div>
+    `
+  };
+
+  transporter.sendMail(mailData, (error, info) => {
+    if (error) {
+      return res.json({
+        status: false,
+        errorCode: 'Error_EmailFailure',
+        message: error.message,
+      });
+    }
+
+    res.json({
+      status: true,
+    });
+  });
 
   return res.json({
     status: true,
@@ -254,15 +307,15 @@ router.get('/sendCode', validate({
       secure: true
     });
     const mailData = {
-      from: 'support@scannget.com',
+      from: 'support@scantogo.com',
       to: value,
-      subject: 'ScanNGet Verification Code',
+      subject: 'ScanToGo Verification Code',
       text: 'Easy',
       html: `
         <div
           style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #2b266d;"
         >
-          <h1>Welcome to ScanNGet</h1>
+          <h1>Welcome to ScanToGo</h1>
           <span style="color: black">
             Thanks for using our service.
           </span>
@@ -437,15 +490,15 @@ async function (req, res, next) {
     secure: true
   });
   const mailData = {
-    from: 'support@scannget.com',
+    from: 'support@scantogo.com',
     to: email,
-    subject: 'ScanNGet Verification Code',
+    subject: 'ScanToGo Verification Code',
     text: 'Easy',
     html: `
       <div
         style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #2b266d;"
       >
-        <h1>Welcome to ScanNGet</h1>
+        <h1>Welcome to ScanToGo</h1>
         <span style="color: black">
           Thanks for using our service.
         </span>
