@@ -51,8 +51,8 @@ app.post("/upload", upload.single("fileData"), (req, res) => {
   try {
     console.log(req.file)
     filename = req.file.path;
-    path = filename.replace(/\\/g, "/");
-    conPath = "images/"+ path.split('/').pop();
+    filePath = filename.replace(/\\/g, "/");
+    conPath = "images/"+ filePath.split('/').pop();
     console.log("/images/"+conPath);
     return res.json({status: true, message:"File uploded successfully", filepath: conPath});
   } catch (error) {
